@@ -18,3 +18,5 @@ Tbl삭제 :
 DB 삭제 : drop DB명;
 Tbl삭제 : drop 테이블명
 
+접속하기 : 
+mysql -u 유저명 -p -h ServerIP
