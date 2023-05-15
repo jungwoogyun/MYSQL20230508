@@ -113,7 +113,24 @@ select * from tbl_buy_copy3;
 select * from tbl_buy_copy3;
  
  
- 
+ -- 문제
+-- 1 userId 순으로 오름차순 정렬
+select * from buytbl order by userid;
+-- 2 price 순으로 내림차순 정렬
+select * from buytbl order by price desc;
+-- 3 amount 순으로 오름차순 prodName으로 내림차순정렬
+select * from buytbl order by amount,prodname desc;
+-- 4 prodName을 오름차순으로 정렬시 중복 제거
+select distinct prodName from buytbl order by prodname;
+-- 5 userID열의 검색시 중복된 아이디제거하고 select
+select distinct userid from buytbl;
+-- 6 구매양(amount)가 3이상인 행을 prodName 내림차순으로정렬
+select * from buytbl where amount>=3 order by prodname desc;
+-- 7 usertbl의 addr 가 서울,경기인 값들을 CUsertbl에 복사
+create table cusertbl(select * from usertbl where addr in ('서울','경기'));
+select * from cusertbl;
+
+
  
  
  
