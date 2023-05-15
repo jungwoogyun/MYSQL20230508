@@ -74,6 +74,51 @@ select * from buytbl where amount >any(select amount from buytbl where userid li
 select * from buytbl where price>all(select price from buytbl where amount=5);
  
  
+ -- 06 order by
+ select * from usertbl order by mDate;
+ select * from usertbl  where birthYear>=1970 order by mDate asc;
+ 
+ select * from usertbl  where birthYear>=1970 order by mDate desc;
+ 
+ select * from usertbl order by height,name asc;
+ 
+ -- 07 distinct
+ select distinct addr from usertbl;
+ 
+ -- 08 limit 
+  select * from usertbl;
+ select * from usertbl limit 3; -- 0 idx부터  - 3라인까지 표시
+ select * from usertbl limit 2,3;
+ 
+ 
+ -- 09 테이블복사
+ -- 1) 구조 + 값 복사(PK,FK 복사 x)
+ create table tbl_buy_copy(select * from buytbl);
+ select * from buytbl;
+ select * from tbl_buy_copy;
+ desc buytbl;
+ desc tbl_buy_copy;
+ 
+create table tbl_buy_copy2(select userid,prodname from buytbl);
+select * from tbl_buy_copy2;
+ 
+ -- 2) 구조만 복사(PK,FK 복사 o)
+ drop table tbl_buy_copy3;
+create table tbl_buy_copy3 like buytbl;
+desc tbl_buy_copy3;
+select * from tbl_buy_copy3;
+ 
+ -- 3) 데이터만 복사
+ insert into tbl_buy_copy3 select * from buytbl where amount>=2;
+select * from tbl_buy_copy3;
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  
