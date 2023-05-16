@@ -37,29 +37,26 @@ select * from tbl_test;
 
 
 -- AUTOCOMMIT 모드 비활성화
--- SET AUTOCOMMIT = 0;
 
--- drop procedure Tx_Test;
--- DELIMITER $$
--- create procedure TX_Test()
--- begin
--- 	declare continue handler for SQLEXCEPTION
---     begin
--- 		show errors;
---         rollback;
---     end;
---     start transaction;
---     savepoint sp;
--- 		begin
--- 			insert into tbl_test values(15,'aa',66,'W');
--- 			insert into tbl_test values(15,'ab',66,'W');
--- 			insert into tbl_test values(16,'ac',66,'W');
---         end;
---     commit;
---     
---     release savepoint sp;
--- end $$
--- DELIMITER ;
+
+drop procedure Tx_Test;
+DELIMITER $$
+create procedure TX_Test()
+begin
+	declare continue handler for SQLEXCEPTION
+    begin
+		show errors;
+        rollback;
+    end;
+    start transaction;
+		savepoint sp;
+		insert into tbl_test values(7,'aa',66,'W');
+		insert into tbl_test values(7,'ab',66,'W');
+		insert into tbl_test values(8,'ac',66,'W');    
+	commit;
+    release savepoint sp;
+end $$
+DELIMITER ;
 
 call TX_Test();
 show procedure status;
