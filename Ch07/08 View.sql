@@ -35,8 +35,19 @@ select * from view_user_buytbl where TotalPay>=100;
 
 
 
+-- 문제
 
-
+use classicmodels;
+create or replace view view_Test
+as
+select *
+from customers C
+inner join employees E
+on E.employeeNumber=C.salesRepEmployeeNumber
+inner join payments P
+on C.customerNumber = P.customerNumber
+inner join offices O
+on E.officeCode = O.officeCode;
 
 
 
