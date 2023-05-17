@@ -68,6 +68,33 @@ on P.productCode =O.productCode;
 -- ----------------------
 -- outer Join
 -- ----------------------
+
+-- left outer join(on 조건을 만족하지 않는 left테이블의 행도 출력)
+select * 
+from usertbl
+left outer join buytbl
+on usertbl.userid = buytbl.userid;
+
+-- right outer join
+select * 
+from buytbl
+right outer join usertbl
+on usertbl.userid = buytbl.userid;
+
+-- full outer join(on 조건을 만족하지 않는 left,right 테이블의 행도 출력)
+-- mysql에서는 full outer join 을 지원하지 않는다.
+-- 대신 union을 사용하여 left,right outer join을 연결한다.
+select * from usertbl left join buytbl on usertbl.userid=buytbl.userid
+union
+select * from usertbl right join buytbl on usertbl.userid=buytbl.userid;
+
+
+
+
+
+
+
+
 USE shopDB;
 CREATE TABLE stdTbl(
 	stdName CHAR(10) NOT NULL PRIMARY KEY,
@@ -97,6 +124,56 @@ INSERT INTO stdclubTbl VALUES
 select * from stdtbl;
 select * from clubtbl;
 select * from stdclubtbl;
+
+-- inner join
+select num,S.stdname,addr,C.clubname,roomno
+from stdtbl S
+inner join stdclubtbl SC
+on S.stdname = SC.stdname
+inner join clubtbl C
+on SC.clubname = C.clubname;
+
+-- left outer join
+select *
+from stdtbl S
+left outer join stdclubtbl SC
+on S.stdname = SC.stdname
+left outer join clubtbl C
+on SC.clubname = C.clubname;
+
+-- right outer join
+select *
+from stdtbl S
+right outer join stdclubtbl SC
+on S.stdname = SC.stdname
+right outer join clubtbl C
+on SC.clubname = C.clubname;
+
+select *
+from stdtbl S
+left outer join stdclubtbl SC
+on S.stdname = SC.stdname
+union
+select * 
+from stdclubtbl SC
+right outer join clubtbl C
+
+
+on SC.clubname = C.clubname;
+
+
+-- 문제
+
+use classicmodels;
+
+select * from products P
+inner join orderdetails OD on P.productCode=OD.productCode
+inner join orders O on O.orderNumber=OD.orderNumber
+inner join customers C on O.customerNumber = C.customerNumber;
+
+
+
+
 
 
 
