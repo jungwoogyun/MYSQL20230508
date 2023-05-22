@@ -190,10 +190,44 @@ delimiter ;
 
 call while01();
 
+-- while02
+create table tbl_googoodan(dan int , i int , result int);
+delimiter $$
+create procedure while02()
+begin 
+	declare dan int ;
+    declare i int ;
+    set dan = 2;
+    set i = 1;
+    while i<10 do
+		insert into tbl_googoodan values(dan,i,dan*i);
+		set i = i+1;
+    end while;
+end $$
+delimiter ;
+call while02();
+select * from tbl_googoodan;
 
+-- 03while
+drop procedure while03;
+delimiter $$
+create procedure while03(in d int)
+begin 
+    declare i int ;
+    set i = 1;
+    insert into tbl_googoodan(dan) values(d);
+    while i<10 do
+		insert into tbl_googoodan values(d,i,d*i);
+		set i = i+1;
+    end while;
+end $$
+delimiter ;
+delete from tbl_googoodan;
+call while03(9);
+select * from tbl_googoodan;
 
-
-
+-- 2단 9단까지 저장
+-- 오름차순 구구단 or 내림차순 구구단 
 
 
  
