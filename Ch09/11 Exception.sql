@@ -63,13 +63,41 @@ call Exception_Test04();
 -- 05 Error_log 기록하는 테이블처리
 
 create table tbl_std (id varchar(20) primary key, name char(10) , age int );
-create table tbl_std_errlog(error_date date , error_code int ,error_msg text);
+drop table tbl_std_errlog;
+create table tbl_std_errlog(error_date datetime , error_code int ,error_msg text);
 show errors;
 
-delimiter $$
 drop procedure tbl_std_proc;
-create procedure tbl_std_proc(in id varchar(20),in name char(10),in age int)
+delimiter $$
+create procedure tbl_std_proc(in id varchar(20),in name char(10),in age varchar(10))
 begin 
+	DECLARE error_code VARCHAR(5);
+    DECLARE error_message VARCHAR(255);
+	-- PK 중복 예외 처리
+    declare continue handler for 1062 
+    begin
+		show errors;
+		get DIAGNOSTICS CONDITION 1
+			error_code = MYSQL_ERRNO,
+            error_message = MESSAGE_TEXT;
+		-- select error_code,error_message;
+        insert into tbl_std_errlog values(now(),error_code,error_message);
+    end;
+    
+    -- Exception Code 1265 
+    declare continue handler for 1265 
+    begin
+		show errors;
+		get DIAGNOSTICS CONDITION 1
+			error_code = MYSQL_ERRNO,
+            error_message = MESSAGE_TEXT;
+		-- select error_code,error_message;
+        insert into tbl_std_errlog values(now(),error_code,error_message);
+        set age = 0;
+        insert into tbl_std values(id,name,age);
+        
+    end;
+    
 	insert into tbl_std values(id,name,age);
     select * from tbl_std;
 end $$
@@ -77,7 +105,41 @@ delimiter ;
 
 call tbl_std_proc('aa','홍길동',10);
 call tbl_std_proc('ab','남길동',20);
+call tbl_std_proc('af','홍길동','5-');
+select * from tbl_std_errlog;
+select * from tbl_std;
+show errors;
 
+delete from tbl_std;
+-- 프로시저(예외처리 + 트랜잭션)
+drop procedure tbl_std_proc_tx;
+delimiter $$
+create procedure tbl_std_proc_tx()
+begin
+	declare exit handler for SQLEXCEPTION
+    begin
+		show errors;
+		rollback;
+    end;
+	start transaction;
+		insert into tbl_std values('f','hoho',11);
+		insert into tbl_std values('g','hoho',12);
+		insert into tbl_std values('f','hoho',13);
+		insert into tbl_std values('i','hoho',14);
+		commit;
+	select * from tbl_std;
+        
+    
+end $$
+delimiter ;
+
+call tbl_std_proc_tx();
+
+
+
+
+
+ 
 
 
 
