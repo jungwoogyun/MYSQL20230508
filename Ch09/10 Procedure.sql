@@ -113,4 +113,87 @@ select *,
 ceil((to_days(curdate()) - to_days( DATE(CONCAT(birthyear, '-01-01'))))/365) as '나이(만)' 
 from usertbl;
 
+use shopdb;
+-- 07 나이 계산하기
+-- ceil : 올림 , round : 반올림 floor : 내림처리
+drop procedure if exists  add_age;
+delimiter $$
+create procedure add_age()
+begin 
+	select U.userid,name,birthyear,prodname,price*amount,
+    floor((to_days(curdate()) - to_days( DATE(CONCAT(birthyear, '-01-01'))))/365) as '나이'
+	from usertbl U
+	inner join buytbl B
+	on U.userid=B.userid;
+end $$
+delimiter ;
 
+call  add_age();
+
+use classicmodels;
+select * from employees;
+
+-- 08 두개 인자 받기
+select * from usertbl where birthYear>=1970 and height>=170;
+delimiter $$
+create procedure proc08(in b int, in h int)
+begin
+	select * from usertbl where birthYear>=b and height>=h;
+end $$;
+delimiter ;
+
+call proc08(1950,170);
+
+select *,
+case 
+	when amount>=10	then 'VIP'
+    when amount>=5	then '우수고객'
+    when amount>=1	then '일반고객'
+    else '구매없음'
+end as 'Grade'
+from buytbl;
+
+delimiter $$
+create procedure proc09(in n1 int, in n2 int , in n3 int)
+begin 
+		select *,
+	case 
+		when amount>=n1	then 'VIP'
+		when amount>=n2	then '우수고객'
+		when amount>=n3	then '일반고객'
+		else '구매없음'
+	end as 'Grade'
+	from buytbl;
+end $$;
+delimiter ;
+call proc09(10,3,1);
+
+-- 문제
+use classicmodels;
+select * from orders;
+
+-- --------------------------------------------
+drop procedure while01;
+delimiter $$
+create procedure while01()
+begin
+	-- 탈출/조건식에 사용되는 변수 선언&초기값 설정
+	declare i int;
+    set i=1;
+    -- 반복에 사용되는 조건식(i<=10) 지정
+	while i<=10 do
+		select 'hello world';
+        set i = i+1; -- 반복문을 벗어나기 위한 연산처리
+    end while;
+end $$;
+delimiter ;
+
+call while01();
+
+
+
+
+
+
+
+ 
